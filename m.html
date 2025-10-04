@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NovaLabs — Next-Gen Software & AI Agents</title>
+
+  <!-- Tailwind via CDN (for prototyping) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <!-- tsParticles for hero background particles -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@3/tsparticles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@3/tsparticles.slim.min.js"></script>
+
+  <!-- VanillaTilt for tilt effect on cards -->
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+
+  <style>
+    /* Custom variables and glass effect */
+    :root{
+      --bg-1: #071127;
+      --accent-1: #00d4ff;
+      --accent-2: #7b61ff;
+      --muted: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+    }
+
+    html,body { height:100%; background: radial-gradient(1200px 600px at 10% 20%, rgba(123,97,255,0.12), transparent), radial-gradient(900px 500px at 90% 80%, rgba(0,212,255,0.06), transparent), linear-gradient(180deg,var(--bg-1), #02101a); color: #e6eef8; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+
+    /* glass nav */
+    .glass-nav {
+      backdrop-filter: blur(8px) saturate(120%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 6px 30px rgba(2,8,23,0.6);
+    }
+
+    /* subtle neon/glow for headings */
+    .neon {
+      text-shadow: 0 6px 30px rgba(0,212,255,0.06), 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    /* gradient accent button */
+    .btn-accent{
+      background: linear-gradient(90deg,var(--accent-1), var(--accent-2));
+      color: #031029;
+      font-weight: 600;
+      box-shadow: 0 6px 28px rgba(123,97,255,0.12);
+    }
+
+    /* floating decorative icons */
+    .floating-icon {
+      position: absolute;
+      width: 96px;
+      height: 96px;
+      opacity: 0.12;
+      filter: blur(1px);
+      transform: translate3d(0,0,0);
+    }
+
+    /* content card glass */
+    .glass-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+    }
+
+    /* contact "console" */
+    .console {
+      background: linear-gradient(180deg, rgba(0,0,0,0.26), rgba(255,255,255,0.02));
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+    }
+
+    /* small responsive improvements */
+    @media (max-width: 768px) {
+      .floating-icon { display:none; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Header -->
+  <header class="fixed w-full z-40 top-4 px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between glass-nav rounded-xl p-3">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 cursor-pointer" id="brand">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00d4ff] to-[#7b61ff] flex items-center justify-center text-black text-lg font-bold shadow-sm">
+            NL
+          </div>
+          <div class="leading-tight">
+            <div class="text-white font-semibold">NovaLabs</div>
+            <div class="text-xs text-slate-300 -mt-0.5">Design • AI • Automation</div>
+          </div>
+        </div>
+        <!-- unique nav: pill menu -->
+        <nav class="hidden md:flex gap-1 ml-6">
+          <a class="px-3 py-2 rounded-md text-sm hover:text-white/95 transition group" href="#home">
+            <span class="inline-block mr-2 text-slate-400 group-hover:translate-y-[-2px] transition">🏠</span> Home
+          </a>
+          <a class="px-3 py-2 rounded-md text-sm hover:text-white/95 transition" href="#services">Services</a>
+          <a class="px-3 py-2 rounded-md text-sm hover:text-white/95 transition" href="#work">Case Studies</a>
+          <a class="px-3 py-2 rounded-md text-sm hover:text-white/95 transition" href="#team">Team</a>
+          <a class="px-3 py-2 rounded-md text-sm hover:text-white/95 transition" href="#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-accent">
+          <i class="fa-solid fa-rocket"></i><span>Get a Quote</span>
+        </button>
+        <button id="themeBtn" class="p-2 rounded-md bg-transparent border border-transparent hover:border-white/6">
+          <i class="fa-solid fa-sparkles text-slate-300"></i>
+        </button>
+        <button class="md:hidden p-2 rounded-md bg-white/3">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-28">
+
+    <!-- HERO -->
+    <section id="home" class="relative overflow-hidden">
+      <!-- particles container -->
+      <div id="tsparticles" class="absolute inset-0 -z-10"></div>
+
+      <!-- decorative floating icons -->
+      <img src="https://cdn.jsdelivr.net/gh/feathericons/feather@4/icons/feather.svg" alt="" class="floating-icon left-8 top-12" style="transform: rotate(14deg); width:120px; opacity:0.08;">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-24">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold neon leading-tight">
+              Transforming your <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#00d4ff] to-[#7b61ff]">vision</span> into next-gen digital reality
+            </h1>
+            <p class="mt-6 text-slate-300 max-w-xl">
+              We design elegant web applications, AI agents, and automation pipelines that accelerate product outcomes. Our team is aggressive in execution — fast delivery, measurable impact, and 95%+ client satisfaction.
+            </p>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href="#contact" class="btn-accent inline-flex items-center gap-3 px-5 py-3 rounded-lg shadow-lg">
+                <i class="fa-solid fa-paper-plane"></i> Start a Project
+              </a>
+              <a href="#work" class="inline-flex items-center gap-3 px-5 py-3 rounded-lg border border-white/6 text-slate-200">
+                <i class="fa-solid fa-eye"></i> See Case Studies
+              </a>
+            </div>
+
+            <!-- animated stats -->
+            <div class="mt-10 grid grid-cols-3 sm:grid-cols-3 gap-4 max-w-md">
+              <div class="glass-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold" data-counter="95">0</div>
+                <div class="text-xs text-slate-300 mt-1">Client Satisfaction %</div>
+              </div>
+              <div class="glass-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold" data-counter="50">0</div>
+                <div class="text-xs text-slate-300 mt-1">AI & Automation Projects</div>
+              </div>
+              <div class="glass-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold" data-counter="200">0</div>
+                <div class="text-xs text-slate-300 mt-1">Web Apps Delivered</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- hero visual card -->
+          <div class="relative">
+            <div class="glass-card rounded-2xl p-6 shadow-2xl border border-white/6 transform-gpu" style="overflow:hidden;">
+              <!-- floating mockup with layered cards -->
+              <div class="relative h-72 lg:h-80">
+                <div class="absolute -left-6 -top-8 w-44 h-56 rounded-xl bg-gradient-to-br from-[#001021] to-[#003049] opacity-80 transform rotate-6 shadow-inner" style="filter:drop-shadow(0 20px 50px rgba(0,0,0,0.7));"></div>
+
+                <div class="absolute right-6 top-6 w-64 h-44 rounded-xl p-4 bg-gradient-to-br from-[#0b2540]/80 to-[#07243b]/60 border border-white/6">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-xs text-slate-300">Dashboard</div>
+                      <div class="text-lg font-semibold mt-1">Sales & Insights</div>
+                    </div>
+                    <div class="text-xs">Beta</div>
+                  </div>
+                  <div class="mt-3 grid grid-cols-3 gap-2">
+                    <div class="h-8 bg-gradient-to-br from-[#7b61ff] to-[#00d4ff] rounded-md"></div>
+                    <div class="h-8 bg-white/6 rounded-md"></div>
+                    <div class="h-8 bg-white/6 rounded-md"></div>
+                  </div>
+                </div>
+
+                <div class="absolute left-8 bottom-6 w-56 h-36 rounded-xl p-3 bg-gradient-to-br from-[#061024] to-[#041426] border border-white/6">
+                  <div class="text-xs text-slate-300">AI Agent</div>
+                  <div class="text-sm font-semibold mt-1">Task automations • RPA</div>
+                  <div class="mt-3 text-xs text-slate-400">Automate customer replies, extract data, and trigger workflows with precision.</div>
+                </div>
+
+                <!-- small icons row -->
+                <div class="absolute left-6 top-52 flex gap-2">
+                  <div class="w-12 h-12 rounded-lg bg-white/6 flex items-center justify-center"><i class="fa-solid fa-brain"></i></div>
+                  <div class="w-12 h-12 rounded-lg bg-white/6 flex items-center justify-center"><i class="fa-solid fa-cogs"></i></div>
+                  <div class="w-12 h-12 rounded-lg bg-white/6 flex items-center justify-center"><i class="fa-solid fa-cloud"></i></div>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <div class="flex items-center justify-between">
+                  <div class="text-sm text-slate-300">Prototype • UI Kit • Design System</div>
+                  <div class="text-xs text-slate-400">Built for scale</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- subtle badges -->
+            <div class="mt-4 flex gap-2">
+              <span class="text-xs px-3 py-1 rounded-full bg-white/6">Design-First</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-white/6">Cloud Native</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-white/6">AI Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between gap-8 mb-6">
+          <div>
+            <div class="text-slate-300 text-sm uppercase">What we do</div>
+            <h2 class="text-3xl font-bold">World-class services built for product velocity</h2>
+          </div>
+          <div class="text-sm text-slate-400 hidden md:block">Crafting design systems, AI agents, automation and cloud-ready applications.</div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- service cards -->
+          <div class="glass-card p-6 rounded-xl" data-tilt data-tilt-max="8">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#00d4ff] to-[#7b61ff] text-black">
+                <i class="fa-solid fa-code"></i>
+              </div>
+              <div>
+                <div class="font-semibold">Website & Web App Design</div>
+                <div class="text-sm text-slate-300 mt-1">Pixel-perfect, fast, accessible frontends. Progressive Web Apps and headless CMS.</div>
+              </div>
+            </div>
+            <ul class="mt-4 text-slate-300 text-sm space-y-2">
+              <li>Design systems & component libraries</li>
+              <li>Performance & accessibility audits</li>
+              <li>Responsive UX with delightful microinteractions</li>
+            </ul>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl" data-tilt data-tilt-max="8">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#7b61ff] to-[#00d4ff] text-black">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+              <div>
+                <div class="font-semibold">UI/UX Strategy & Design Systems</div>
+                <div class="text-sm text-slate-300 mt-1">UX research, prototypes, flows, and scalable design tokens for product teams.</div>
+              </div>
+            </div>
+            <ul class="mt-4 text-slate-300 text-sm space-y-2">
+              <li>Design tokens & component libraries</li>
+              <li>User-centred flows & testing</li>
+            </ul>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl" data-tilt data-tilt-max="8">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#ffb86b] to-[#ff6b6b] text-black">
+                <i class="fa-solid fa-robot"></i>
+              </div>
+              <div>
+                <div class="font-semibold">Process Automation & AI Agents</div>
+                <div class="text-sm text-slate-300 mt-1">Automate workflows, build custom AI agents, and integrate RPA for scale.</div>
+              </div>
+            </div>
+            <ul class="mt-4 text-slate-300 text-sm space-y-2">
+              <li>Custom LLM agents & pipelines</li>
+              <li>RPA connectors & event triggers</li>
+              <li>Audit logs & safe deployment</li>
+            </ul>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl" data-tilt data-tilt-max="8">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#1be7ff] to-[#7b61ff] text-black">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div>
+                <div class="font-semibold">Cloud Integration & DevOps</div>
+                <div class="text-sm text-slate-300 mt-1">CI/CD, infra-as-code, monitoring and secure deployments for reliability.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl" data-tilt data-tilt-max="8">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#00ffa3] to-[#7bfffb] text-black">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <div>
+                <div class="font-semibold">Data Engineering & Analytics</div>
+                <div class="text-sm text-slate-300 mt-1">Pipelines, ETL/ELT, dashboards and ML-ready datasets for product insights.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl" data-tilt data-tilt-max="8">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#ff6bcb] to-[#ff9a6b] text-black">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <div class="font-semibold">Security Reviews & Compliance</div>
+                <div class="text-sm text-slate-300 mt-1">Threat models, secure-by-design reviews, data privacy checks and more.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Work / Case Studies -->
+    <section id="work" class="py-20 bg-gradient-to-b from-transparent to-black/5">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="mb-8">
+          <div class="text-slate-300 text-sm uppercase">Selected work</div>
+          <h3 class="text-2xl font-bold">Case Studies & Products</h3>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- card -->
+          <div class="glass-card rounded-xl p-4 overflow-hidden group transform-gpu" data-tilt>
+            <div class="relative h-44 rounded-lg overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            </div>
+            <div class="mt-4">
+              <div class="flex items-center justify-between">
+                <div class="font-semibold">AI Support Agent</div>
+                <div class="text-xs text-slate-400">SaaS</div>
+              </div>
+              <p class="text-sm text-slate-300 mt-2">Built a context-aware assistant that reduced support times by 63% and automated ticket triage.</p>
+              <div class="mt-3 flex gap-2">
+                <span class="text-xs px-2 py-1 rounded bg-white/4">LLM</span>
+                <span class="text-xs px-2 py-1 rounded bg-white/4">RPA</span>
+                <span class="text-xs px-2 py-1 rounded bg-white/4">Analytics</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 overflow-hidden group transform-gpu" data-tilt>
+            <div class="relative h-44 rounded-lg overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            </div>
+            <div class="mt-4">
+              <div class="flex items-center justify-between">
+                <div class="font-semibold">E-commerce Redesign</div>
+                <div class="text-xs text-slate-400">Retail</div>
+              </div>
+              <p class="text-sm text-slate-300 mt-2">Redesigned checkout experience to improve conversion by 18% and increase average order value.</p>
+              <div class="mt-3 flex gap-2">
+                <span class="text-xs px-2 py-1 rounded bg-white/4">PWA</span>
+                <span class="text-xs px-2 py-1 rounded bg-white/4">Design System</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 overflow-hidden group transform-gpu" data-tilt>
+            <div class="relative h-44 rounded-lg overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            </div>
+            <div class="mt-4">
+              <div class="flex items-center justify-between">
+                <div class="font-semibold">Analytics Platform</div>
+                <div class="text-xs text-slate-400">Fintech</div>
+              </div>
+              <p class="text-sm text-slate-300 mt-2">End-to-end data pipeline with realtime dashboards powering 30+ KPIs for product teams.</p>
+              <div class="mt-3 flex gap-2">
+                <span class="text-xs px-2 py-1 rounded bg-white/4">DBT</span>
+                <span class="text-xs px-2 py-1 rounded bg-white/4">Spark</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-8 text-center">
+          <a href="#contact" class="inline-flex items-center gap-3 px-6 py-3 rounded-lg btn-accent">
+            <i class="fa-solid fa-briefcase"></i> Talk to our team about a case study
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section id="team" class="py-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="mb-8">
+          <div class="text-slate-300 text-sm uppercase">People</div>
+          <h3 class="text-2xl font-bold">A passionate team that builds fast, thinks smart, and delivers excellence</h3>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-6">
+          <!-- member -->
+          <div class="glass-card p-6 rounded-xl text-center">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="team" class="w-24 h-24 rounded-full mx-auto object-cover shadow-md">
+            <div class="mt-4 font-semibold">Maya Rao</div>
+            <div class="text-xs text-slate-300">Head of Design</div>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl text-center">
+            <img src="https://images.unsplash.com/photo-1545996124-1b56e0f62204?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="team" class="w-24 h-24 rounded-full mx-auto object-cover shadow-md">
+            <div class="mt-4 font-semibold">Ishan Patel</div>
+            <div class="text-xs text-slate-300">Lead Engineer</div>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl text-center">
+            <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="team" class="w-24 h-24 rounded-full mx-auto object-cover shadow-md">
+            <div class="mt-4 font-semibold">Sonia Verma</div>
+            <div class="text-xs text-slate-300">Data Engineer</div>
+          </div>
+
+          <div class="glass-card p-6 rounded-xl text-center">
+            <img src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="team" class="w-24 h-24 rounded-full mx-auto object-cover shadow-md">
+            <div class="mt-4 font-semibold">Arjun Singh</div>
+            <div class="text-xs text-slate-300">AI Researcher</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / Innovative Console Form -->
+    <section id="contact" class="py-20 bg-gradient-to-b from-transparent to-black/8">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-10 items-start">
+          <div>
+            <div class="text-slate-300 text-sm uppercase">Start a conversation</div>
+            <h3 class="text-3xl font-bold mb-4">Tell us about your idea — fast</h3>
+            <p class="text-slate-300 max-w-lg">Use our interactive console below to describe your project at a high level. Our team will analyze and get back with a plan and rough timeline within 48 hours.</p>
+
+            <!-- contact console -->
+            <div class="mt-6 console" id="console">
+              <div id="consoleMessages" style="min-height:160px;">
+                <div class="text-slate-400 text-sm">Hey there 👋, tell us what you're building next. Try: "Build a customer support AI that routes tickets & suggests replies."</div>
+              </div>
+
+              <div class="mt-4 flex gap-2 items-center">
+                <input id="consoleInput" type="text" placeholder="Type project summary — e.g., 'ecommerce PWA + admin dashboard'" class="flex-1 rounded-md p-2 bg-transparent border border-white/6 text-sm placeholder:text-slate-400 outline-none">
+                <button id="consoleSend" class="px-4 py-2 rounded-md btn-accent">Submit & Connect</button>
+              </div>
+
+              <div class="text-xs text-slate-400 mt-3">Or use the structured form to request a proposal.</div>
+            </div>
+
+            <!-- structured form -->
+            <form id="proposalForm" class="mt-6 grid grid-cols-1 gap-3">
+              <input name="name" placeholder="Full name" class="rounded-md p-3 bg-transparent border border-white/6 outline-none" />
+              <input name="email" placeholder="Email address" class="rounded-md p-3 bg-transparent border border-white/6 outline-none" />
+              <select name="budget" class="rounded-md p-3 bg-transparent border border-white/6 outline-none">
+                <option value="">Estimated budget</option>
+                <option>$5k - $20k</option>
+                <option>$20k - $100k</option>
+                <option>$100k+</option>
+              </select>
+              <textarea name="details" placeholder="Project details, timeline, essential integrations..." class="rounded-md p-3 bg-transparent border border-white/6 outline-none"></textarea>
+              <div class="flex gap-3">
+                <button type="submit" class="btn-accent px-5 py-3 rounded-lg">Request Proposal</button>
+                <button type="button" id="startCall" class="px-4 py-3 rounded-lg border border-white/6">Schedule a Call</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- right column: contact + map + offices -->
+          <div class="space-y-4">
+            <div class="glass-card p-6 rounded-xl">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-slate-300 text-sm">Headquarters</div>
+                  <div class="font-semibold">Austin, TX</div>
+                </div>
+                <div class="text-sm text-slate-400">Mon - Fri • 9am - 6pm</div>
+              </div>
+              <div class="mt-4 text-sm text-slate-300">hello@novalabs.example • +1 (555) 123-4567</div>
+            </div>
+
+            <div class="glass-card p-6 rounded-xl">
+              <div class="text-sm text-slate-300">Offices</div>
+              <div class="mt-3 grid grid-cols-2 gap-3 text-xs text-slate-300">
+                <div class="p-3 rounded bg-white/3">Bengaluru</div>
+                <div class="p-3 rounded bg-white/3">London</div>
+                <div class="p-3 rounded bg-white/3">Toronto</div>
+                <div class="p-3 rounded bg-white/3">Singapore</div>
+              </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-xl">
+              <div class="text-sm text-slate-300">Security & Privacy</div>
+              <div class="mt-2 text-xs text-slate-400">We align with industry best-practices. Your data is encrypted and never used to train models without permission.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-12 py-8">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div>
+        <div class="font-semibold">NovaLabs</div>
+        <div class="text-xs text-slate-400">Design • AI • Automation</div>
+      </div>
+      <div class="flex items-center gap-4 text-slate-300">
+        <a class="hover:text-white" href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a class="hover:text-white" href="#"><i class="fa-brands fa-github"></i></a>
+        <a class="hover:text-white" href="#"><i class="fa-brands fa-twitter"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: initialize components and animations -->
+  <script>
+    // tsParticles for a high-tech hero background
+    tsParticles.load("tsparticles", {
+      fpsLimit: 60,
+      particles: {
+        number: { value: 60 },
+        color: { value: ["#00d4ff", "#7b61ff", "#ffffff"] },
+        shape: { type: "circle" },
+        opacity: { value: 0.08 },
+        size: { value: { min: 1, max: 6 } },
+        move: { enable: true, speed: 0.6, direction: "none", outMode: "out" },
+        links: { enable: true, distance: 140, color: "#ffffff", opacity: 0.03, width: 1 }
+      },
+      detectRetina: true
+    });
+
+    // VanillaTilt init on cards with data-tilt
+    VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+      max: 8,
+      speed: 400,
+      glare: true,
+      "max-glare": 0.08,
+    });
+
+    // GSAP animations: counters, intro
+    document.addEventListener("DOMContentLoaded", function() {
+      // Animate hero entrance
+      gsap.from("header", { y: -50, opacity: 0, duration: 0.6, ease: "power2.out" });
+      gsap.from("#home h1", { y: 30, opacity: 0, duration: 0.9, delay: 0.2, ease: "power3.out" });
+      gsap.from("#home p", { y: 20, opacity: 0, duration: 0.8, delay: 0.35, ease: "power3.out" });
+      gsap.fromAll(".glass-card", { y: 24, opacity: 0, duration: 0.9, stagger: 0.08, ease: "power3.out" });
+
+      // counters
+      document.querySelectorAll("[data-counter]").forEach(el => {
+        let target = parseInt(el.getAttribute("data-counter"), 10);
+        gsap.to(el, {
+          innerText: target,
+          duration: 1.8,
+          ease: "power1.out",
+          snap: { innerText: 1 },
+          onUpdate: function() {
+            el.innerText = Math.floor(el.innerText);
+          }
+        });
+      });
+    });
+
+    // Contact console: simple conversation & submit animations
+    const consoleInput = document.getElementById("consoleInput");
+    const consoleSend = document.getElementById("consoleSend");
+    const consoleMessages = document.getElementById("consoleMessages");
+
+    consoleSend.addEventListener("click", function() {
+      let text = consoleInput.value.trim();
+      if (!text) {
+        // subtle shake
+        gsap.from(consoleInput, { x: -6, duration: 0.1, yoyo: true, repeat: 3 });
+        return;
+      }
+
+      appendMessage("You", text, "text-slate-200");
+      consoleInput.value = "";
+      // show loader
+      let loader = appendMessage("NovaLabs", "Analyzing your summary…", "text-slate-300", true);
+
+      // simulate analysis and return a summary reply
+      setTimeout(() => {
+        loader.remove(); // remove loader
+        appendMessage("NovaLabs", generateQuickReply(text), "text-slate-300");
+        // pulse get a quote button
+        gsap.fromTo(".btn-accent", { scale: 1 }, { scale: 1.05, duration: 0.18, yoyo: true, repeat: 1 });
+      }, 1200 + Math.random()*800);
+    });
+
+    function appendMessage(sender, text, classes = "", isLoader = false) {
+      const el = document.createElement("div");
+      el.className = `mb-3 ${classes}`;
+      if (isLoader) {
+        el.innerHTML = `<div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-white/6 animate-pulse"></div><div class="text-sm">${text}</div></div>`;
+      } else {
+        el.innerHTML = `<div class="text-xs text-slate-400 font-medium mb-1">${sender}</div><div class="text-sm">${escapeHtml(text)}</div>`;
+      }
+      consoleMessages.appendChild(el);
+      consoleMessages.scrollTop = consoleMessages.scrollHeight;
+      return el;
+    }
+
+    function generateQuickReply(text) {
+      // basic lightweight parsing to suggest services and next steps
+      let lower = text.toLowerCase();
+      let suggestions = [];
+      if (lower.includes("ecommerce") || lower.includes("shop") || lower.includes("checkout")) suggestions.push("PWA + checkout optimization");
+      if (lower.includes("support") || lower.includes("ticket") || lower.includes("help")) suggestions.push("AI Support Agent + knowledge base");
+      if (lower.includes("automation") || lower.includes("rpa") || lower.includes("workflow")) suggestions.push("RPA connectors + workflow automation");
+      if (lower.includes("dashboard") || lower.includes("analytics") || lower.includes("data")) suggestions.push("Data pipeline & dashboards");
+      if (lower.includes("mobile") || lower.includes("app")) suggestions.push("Cross-platform Web App + offline-first PWA");
+      if (suggestions.length === 0) suggestions = ["Discovery sprint", "Prototype & UX validation", "Estimation for MVP build"];
+
+      return `Nice — we can help with: ${suggestions.slice(0,3).join(", ")}. Next step: we'll propose an approach & rough estimate. Please fill the structured form or click "Request Proposal".`;
+    }
+
+    // structured form submit (demo only)
+    document.getElementById("proposalForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      // quick feedback
+      gsap.to("#proposalForm", { opacity: 0.6, duration: 0.2 });
+      setTimeout(() => {
+        gsap.to("#proposalForm", { opacity: 1, duration: 0.2 });
+        alert("Thanks! Your request has been received. We'll be in touch within 48 hours.");
+        this.reset();
+      }, 800);
+    });
+
+    document.getElementById("startCall").addEventListener("click", function() {
+      alert("Scheduling feature demo (placeholder). We'll direct you to calendar booking in production.");
+    });
+
+    function escapeHtml(unsafe) {
+      return unsafe.replace(/[&<"']/g, function(m) {
+        return ({ '&': '&amp;', '<': '&lt;', '"': '&quot;', "'": '&#039;' })[m];
+      });
+    }
+
+    // theme toggle — tiny interactive flourish
+    document.getElementById("themeBtn").addEventListener("click", function(){
+      gsap.fromTo("body", { filter: "hue-rotate(0deg)" }, { filter: "hue-rotate(45deg)", duration: 0.6, yoyo: true, repeat: 1 });
+    });
+
+    // small accessibility: focus styles (tailwind provides base but reinforce)
+    document.addEventListener("keyup", function(e){
+      if(e.key === "Tab") document.body.classList.add("user-is-tabbing");
+    });
+  </script>
+
+</body>
+</html>
